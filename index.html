@@ -29,6 +29,7 @@
       flex-direction: column;
       overflow-x: hidden;
       user-select: none;
+      zoom: 0.95; /* 全体を5%縮小 */
     }
 
     .split-container {
@@ -60,16 +61,16 @@
     }
 
     .section-title {
-      font-size: 1.8rem;
+      font-size: 1.7rem;
       font-weight: 800;
-      margin-bottom: 25px;
-      padding: 12px 30px;
-      border-radius: 20px;
+      margin-bottom: 22px;
+      padding: 11px 28px;
+      border-radius: 18px;
       text-align: center;
       line-height: 1.4;
       letter-spacing: 1px;
       box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-      min-width: 320px;
+      min-width: 300px;
     }
 
     .title-racket {
@@ -89,21 +90,21 @@
 
     .roulette-wrapper {
       position: relative;
-      width: min(520px, 44vw);
-      height: min(520px, 44vw);
-      margin-bottom: 25px;
+      width: min(490px, 42vw);
+      height: min(490px, 42vw);
+      margin-bottom: 22px;
     }
 
     .pointer {
       position: absolute;
-      top: -20px;
+      top: -19px;
       left: 50%;
       transform: translateX(-50%);
       width: 0;
       height: 0;
-      border-left: 20px solid transparent;
-      border-right: 20px solid transparent;
-      border-top: 40px solid var(--accent-yellow);
+      border-left: 19px solid transparent;
+      border-right: 19px solid transparent;
+      border-top: 38px solid var(--accent-yellow);
       z-index: 5;
       filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
     }
@@ -114,7 +115,7 @@
       border-radius: 50%;
       position: relative;
       overflow: hidden;
-      border: 10px solid #334155;
+      border: 9px solid #334155;
       box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 0 20px rgba(0,0,0,0.5);
       transition: transform 4s cubic-bezier(0.15, 0.9, 0.15, 1);
     }
@@ -124,8 +125,8 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 60px;
-      height: 60px;
+      width: 57px;
+      height: 57px;
       background: #0f172a;
       border: 5px solid var(--accent-yellow);
       border-radius: 50%;
@@ -149,13 +150,13 @@
 
     .btn-group {
       display: flex;
-      gap: 15px;
+      gap: 14px;
       z-index: 4;
     }
 
     .spin-btn {
-      padding: 16px 36px;
-      font-size: 1.3rem;
+      padding: 15px 34px;
+      font-size: 1.2rem;
       font-weight: bold;
       border: none;
       border-radius: 50px;
@@ -163,7 +164,7 @@
       color: white;
       box-shadow: 0 6px 20px rgba(0,0,0,0.4);
       transition: all 0.2s ease;
-      min-width: 220px;
+      min-width: 210px;
       text-align: center;
     }
 
@@ -187,15 +188,15 @@
 
     .center-controls {
       position: absolute;
-      bottom: 30px;
+      bottom: 28px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 10;
     }
 
     .btn-both {
-      padding: 20px 48px;
-      font-size: 1.5rem;
+      padding: 19px 46px;
+      font-size: 1.4rem;
       font-weight: 900;
       background: linear-gradient(135deg, #f59e0b, #d97706);
       color: white;
@@ -229,7 +230,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 25px;
+      gap: 24px;
     }
 
     .final-result-screen.active {
@@ -237,13 +238,13 @@
     }
 
     .final-card {
-      padding: 25px 50px;
-      border-radius: 24px;
-      font-size: 2.2rem;
+      padding: 24px 48px;
+      border-radius: 23px;
+      font-size: 2.1rem;
       font-weight: 900;
       text-align: center;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      min-width: 360px;
+      min-width: 340px;
     }
 
     .final-racket {
@@ -259,8 +260,8 @@
     }
 
     .btn-table {
-      padding: 18px 42px;
-      font-size: 1.4rem;
+      padding: 17px 40px;
+      font-size: 1.3rem;
       font-weight: 900;
       background: linear-gradient(135deg, #10b981, #059669);
       color: white;
@@ -304,31 +305,31 @@
         transform: translate(-50%, 50%);
       }
       .roulette-wrapper {
-        width: min(280px, 65vw);
-        height: min(280px, 65vw);
+        width: min(265px, 62vw);
+        height: min(265px, 62vw);
       }
       .section-title {
-        font-size: 1.3rem;
-        min-width: 240px;
-        padding: 8px 16px;
+        font-size: 1.2rem;
+        min-width: 230px;
+        padding: 8px 15px;
       }
       .spin-btn {
-        padding: 12px 24px;
-        font-size: 1.1rem;
-        min-width: 180px;
+        padding: 11px 23px;
+        font-size: 1rem;
+        min-width: 170px;
       }
       .btn-both {
-        padding: 14px 30px;
-        font-size: 1.2rem;
+        padding: 13px 28px;
+        font-size: 1.1rem;
       }
       .final-card {
-        font-size: 1.5rem;
-        min-width: 280px;
-        padding: 18px 30px;
+        font-size: 1.4rem;
+        min-width: 260px;
+        padding: 17px 28px;
       }
       .btn-table {
-        font-size: 1.1rem;
-        padding: 14px 30px;
+        font-size: 1rem;
+        padding: 13px 28px;
       }
     }
   </style>
@@ -377,7 +378,7 @@
 
   <!-- 全画面結果表示画面 -->
   <div class="final-result-screen" id="final-screen">
-    <div style="font-size: 2rem; font-weight: 900; color: var(--accent-yellow);">🎉 最終決定 🎉</div>
+    <div style="font-size: 1.9rem; font-weight: 900; color: var(--accent-yellow);">🎉 最終決定 🎉</div>
     <div class="final-card final-racket" id="final-racket-val">ラケット: -</div>
     <div class="final-card final-ball" id="final-ball-val">ボール: -</div>
     <button class="btn-table" onclick="goToTable()">卓球台に向かう</button>
@@ -406,7 +407,6 @@
       ball: { rotation: 0, isSpinning: false, count: 0, lastResult: "" }
     };
 
-    // ダブルタップで全画面切り替え
     let lastTapTime = 0;
     document.addEventListener('touchend', (e) => {
       const currentTime = new Date().getTime();
@@ -418,7 +418,6 @@
       lastTapTime = currentTime;
     });
 
-    // PCでのダブルクリック用（必要に応じて）
     document.addEventListener('dblclick', () => {
       toggleFullScreen();
     });
