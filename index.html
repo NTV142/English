@@ -5,31 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ルーレット</title>
   <style>
-    :root {
-      --bg-color: #0f172a;
-      --card-bg: #1e293b;
-      --text-main: #f8fafc;
-      --racket-color: #ef4444;
-      --ball-color: #3b82f6;
-      --accent-yellow: #f59e0b;
-    }
-
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: sans-serif;
     }
 
     body {
-      background-color: var(--bg-color);
-      color: var(--text-main);
+      background-color: #0f172a;
+      color: #f8fafc;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       overflow-x: hidden;
       user-select: none;
-      zoom: 0.95; /* 全体を5%縮小 */
     }
 
     .split-container {
@@ -37,7 +27,6 @@
       flex: 1;
       width: 100vw;
       position: relative;
-      transition: opacity 0.5s ease;
     }
 
     .section {
@@ -52,34 +41,27 @@
     }
 
     .section-racket {
-      background: radial-gradient(circle at center, rgba(239, 68, 68, 0.08) 0%, transparent 70%);
       border-right: 2px dashed #334155;
     }
 
-    .section-ball {
-      background: radial-gradient(circle at center, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
-    }
-
     .section-title {
-      font-size: 1.7rem;
+      font-size: 1.6rem;
       font-weight: 800;
-      margin-bottom: 22px;
-      padding: 11px 28px;
-      border-radius: 18px;
+      margin-bottom: 20px;
+      padding: 10px 25px;
+      border-radius: 12px;
       text-align: center;
       line-height: 1.4;
-      letter-spacing: 1px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-      min-width: 300px;
+      min-width: 280px;
     }
 
     .title-racket {
-      background: var(--racket-color);
+      background: #ef4444;
       color: white;
     }
 
     .title-ball {
-      background: var(--ball-color);
+      background: #3b82f6;
       color: white;
     }
 
@@ -90,23 +72,22 @@
 
     .roulette-wrapper {
       position: relative;
-      width: min(490px, 42vw);
-      height: min(490px, 42vw);
-      margin-bottom: 22px;
+      width: min(450px, 40vw);
+      height: min(450px, 40vw);
+      margin-bottom: 20px;
     }
 
     .pointer {
       position: absolute;
-      top: -19px;
+      top: -18px;
       left: 50%;
       transform: translateX(-50%);
       width: 0;
       height: 0;
-      border-left: 19px solid transparent;
-      border-right: 19px solid transparent;
-      border-top: 38px solid var(--accent-yellow);
+      border-left: 18px solid transparent;
+      border-right: 18px solid transparent;
+      border-top: 36px solid #f59e0b;
       z-index: 5;
-      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
     }
 
     .roulette-wheel {
@@ -115,8 +96,7 @@
       border-radius: 50%;
       position: relative;
       overflow: hidden;
-      border: 9px solid #334155;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 0 20px rgba(0,0,0,0.5);
+      border: 8px solid #334155;
       transition: transform 4s cubic-bezier(0.15, 0.9, 0.15, 1);
     }
 
@@ -125,13 +105,12 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 57px;
-      height: 57px;
+      width: 50px;
+      height: 50px;
       background: #0f172a;
-      border: 5px solid var(--accent-yellow);
+      border: 4px solid #f59e0b;
       border-radius: 50%;
       z-index: 4;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
     }
 
     .wheel-svg {
@@ -145,72 +124,52 @@
       fill: #ffffff;
       text-anchor: end;
       dominant-baseline: middle;
-      filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.8));
     }
 
     .btn-group {
       display: flex;
-      gap: 14px;
+      gap: 12px;
       z-index: 4;
     }
 
     .spin-btn {
-      padding: 15px 34px;
+      padding: 14px 30px;
       font-size: 1.2rem;
       font-weight: bold;
       border: none;
-      border-radius: 50px;
+      border-radius: 30px;
       cursor: pointer;
       color: white;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-      transition: all 0.2s ease;
-      min-width: 210px;
+      min-width: 200px;
       text-align: center;
-    }
-
-    .spin-btn:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-    }
-
-    .spin-btn:active:not(:disabled) {
-      transform: translateY(1px);
     }
 
     .spin-btn:disabled {
       opacity: 0.4;
       cursor: not-allowed;
-      filter: grayscale(0.8);
     }
 
-    .btn-racket { background: linear-gradient(135deg, #ef4444, #dc2626); }
-    .btn-ball { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+    .btn-racket { background: #ef4444; }
+    .btn-ball { background: #3b82f6; }
 
     .center-controls {
       position: absolute;
-      bottom: 28px;
+      bottom: 25px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 10;
     }
 
     .btn-both {
-      padding: 19px 46px;
+      padding: 18px 42px;
       font-size: 1.4rem;
       font-weight: 900;
-      background: linear-gradient(135deg, #f59e0b, #d97706);
+      background: #f59e0b;
       color: white;
-      border: 5px solid #1e293b;
-      border-radius: 50px;
+      border: 4px solid #1e293b;
+      border-radius: 30px;
       cursor: pointer;
-      box-shadow: 0 10px 30px rgba(245, 158, 11, 0.5);
-      transition: all 0.2s ease;
       white-space: nowrap;
-    }
-
-    .btn-both:hover:not(:disabled) {
-      transform: scale(1.06);
-      box-shadow: 0 12px 35px rgba(245, 158, 11, 0.7);
     }
 
     .btn-both:disabled {
@@ -225,12 +184,12 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(15, 23, 42, 0.95);
+      background: #0f172a;
       z-index: 200;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 24px;
+      gap: 20px;
     }
 
     .final-result-screen.active {
@@ -238,54 +197,36 @@
     }
 
     .final-card {
-      padding: 24px 48px;
-      border-radius: 23px;
-      font-size: 2.1rem;
+      padding: 20px 40px;
+      border-radius: 16px;
+      font-size: 2rem;
       font-weight: 900;
       text-align: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      min-width: 340px;
+      min-width: 320px;
     }
 
     .final-racket {
-      background: rgba(239, 68, 68, 0.2);
-      border: 4px solid var(--racket-color);
+      background: #1e293b;
+      border: 3px solid #ef4444;
       color: #fca5a5;
     }
 
     .final-ball {
-      background: rgba(59, 130, 246, 0.2);
-      border: 4px solid var(--ball-color);
+      background: #1e293b;
+      border: 3px solid #3b82f6;
       color: #93c5fd;
     }
 
     .btn-table {
-      padding: 17px 40px;
+      padding: 16px 38px;
       font-size: 1.3rem;
       font-weight: 900;
-      background: linear-gradient(135deg, #10b981, #059669);
+      background: #10b981;
       color: white;
-      border: 4px solid #1e293b;
-      border-radius: 50px;
+      border: 3px solid #1e293b;
+      border-radius: 30px;
       cursor: pointer;
-      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
-      transition: all 0.2s ease;
       margin-top: 10px;
-    }
-
-    .btn-table:hover {
-      transform: scale(1.05);
-      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.6);
-    }
-
-    #confetti-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: 999;
     }
 
     @media (max-width: 768px) {
@@ -305,31 +246,31 @@
         transform: translate(-50%, 50%);
       }
       .roulette-wrapper {
-        width: min(265px, 62vw);
-        height: min(265px, 62vw);
+        width: min(240px, 60vw);
+        height: min(240px, 60vw);
       }
       .section-title {
-        font-size: 1.2rem;
-        min-width: 230px;
-        padding: 8px 15px;
+        font-size: 1.1rem;
+        min-width: 220px;
+        padding: 6px 12px;
       }
       .spin-btn {
-        padding: 11px 23px;
+        padding: 10px 20px;
         font-size: 1rem;
-        min-width: 170px;
+        min-width: 150px;
       }
       .btn-both {
-        padding: 13px 28px;
+        padding: 12px 26px;
         font-size: 1.1rem;
       }
       .final-card {
-        font-size: 1.4rem;
+        font-size: 1.3rem;
         min-width: 260px;
-        padding: 17px 28px;
+        padding: 15px 25px;
       }
       .btn-table {
         font-size: 1rem;
-        padding: 13px 28px;
+        padding: 12px 26px;
       }
     }
   </style>
@@ -376,15 +317,13 @@
     <button class="btn-both" id="btn-spin-both" onclick="handleCenterBtn()">両方同時に回す！</button>
   </div>
 
-  <!-- 全画面結果表示画面 -->
+  <!-- 最終結果表示画面 -->
   <div class="final-result-screen" id="final-screen">
-    <div style="font-size: 1.9rem; font-weight: 900; color: var(--accent-yellow);">🎉 最終決定 🎉</div>
+    <div style="font-size: 1.8rem; font-weight: 900; color: #f59e0b;">🎉 最終決定 🎉</div>
     <div class="final-card final-racket" id="final-racket-val">ラケット: -</div>
     <div class="final-card final-ball" id="final-ball-val">ボール: -</div>
     <button class="btn-table" onclick="goToTable()">卓球台に向かう</button>
   </div>
-
-  <canvas id="confetti-canvas"></canvas>
 
   <script>
     let racketItems = [
@@ -406,33 +345,6 @@
       racket: { rotation: 0, isSpinning: false, count: 0, lastResult: "" },
       ball: { rotation: 0, isSpinning: false, count: 0, lastResult: "" }
     };
-
-    let lastTapTime = 0;
-    document.addEventListener('touchend', (e) => {
-      const currentTime = new Date().getTime();
-      const tapLength = currentTime - lastTapTime;
-      if (tapLength < 300 && tapLength > 0) {
-        toggleFullScreen();
-        e.preventDefault();
-      }
-      lastTapTime = currentTime;
-    });
-
-    document.addEventListener('dblclick', () => {
-      toggleFullScreen();
-    });
-
-    function toggleFullScreen() {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(err => {
-          console.log(`全画面化エラー: ${err.message}`);
-        });
-      } else {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        }
-      }
-    }
 
     let audioCtx = null;
     function initAudio() {
@@ -487,8 +399,7 @@
         return;
       }
       const sliceAngle = 360 / total;
-
-      svg.innerHTML = '';
+      let svgContent = '';
 
       items.forEach((item, index) => {
         const startAngle = index * sliceAngle - 90;
@@ -505,31 +416,15 @@
         const largeArc = sliceAngle > 180 ? 1 : 0;
 
         const pathData = `M 50 50 L ${x1} ${y1} A 50 50 0 ${largeArc} 1 ${x2} ${y2} Z`;
-        
-        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        path.setAttribute("d", pathData);
-        path.setAttribute("fill", color);
-        path.setAttribute("stroke", "#1e293b");
-        path.setAttribute("stroke-width", "0.4");
-        svg.appendChild(path);
-
         const midAngle = startAngle + sliceAngle / 2;
-        const textGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
-        textGroup.setAttribute("transform", `rotate(${midAngle}, 50, 50)`);
 
-        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        text.setAttribute("x", "95");
-        text.setAttribute("y", "50");
-        text.setAttribute("class", "slice-text");
-        text.textContent = item;
-
-        if (item.length > 6) {
-          text.setAttribute("font-size", "3px");
-        }
-
-        textGroup.appendChild(text);
-        svg.appendChild(textGroup);
+        svgContent += `<path d="${pathData}" fill="${color}" stroke="#1e293b" stroke-width="0.4" />`;
+        svgContent += `<g transform="rotate(${midAngle}, 50, 50)">`;
+        svgContent += `<text x="95" y="50" class="slice-text"${item.length > 6 ? ' font-size="3px"' : ''}>${item}</text>`;
+        svgContent += `</g>`;
       });
+
+      svg.innerHTML = svgContent;
     }
 
     function spin(type, items) {
@@ -546,7 +441,7 @@
         const sliceAngle = 360 / items.length;
 
         const selectedIndex = Math.floor(Math.random() * items.length);
-        const extraRounds = (5 + Math.floor(Math.random() * 4)) * 360;
+        const extraRounds = (4 + Math.floor(Math.random() * 3)) * 360;
         
         const targetSectorAngle = 360 - (selectedIndex * sliceAngle + sliceAngle / 2);
         const currentMod = state[type].rotation % 360;
@@ -573,9 +468,8 @@
 
           updateButtons();
           playFanfareSound();
-          triggerConfetti();
           resolve(items[selectedIndex]);
-        }, 4000);
+        }, 3500);
       });
     }
 
@@ -597,7 +491,6 @@
         
         document.getElementById('final-screen').classList.add('active');
         playFanfareSound();
-        triggerConfetti();
       } else {
         await Promise.all([
           spin('racket', racketItems),
@@ -660,11 +553,7 @@
         racketBtn.textContent = 'ラスト１回まわす';
         racketBtn.disabled = false;
       } else {
-        if (bCount < 2) {
-          racketBtn.textContent = '右を回してね';
-        } else {
-          racketBtn.textContent = '終了';
-        }
+        racketBtn.textContent = bCount < 2 ? '右を回してね' : '終了';
         racketBtn.disabled = true;
       }
 
@@ -675,72 +564,19 @@
         ballBtn.textContent = 'ラスト１回まわす';
         ballBtn.disabled = false;
       } else {
-        if (rCount < 2) {
-          ballBtn.textContent = '左を回してね';
-        } else {
-          ballBtn.textContent = '終了';
-        }
+        ballBtn.textContent = rCount < 2 ? '左を回してね' : '終了';
         ballBtn.disabled = true;
       }
 
       if (rCount >= 1 && bCount >= 1) {
         bothBtn.textContent = '決定';
-        bothBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+        bothBtn.style.background = '#10b981';
         bothBtn.disabled = false;
       } else {
         bothBtn.textContent = '両方同時に回す！';
-        bothBtn.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+        bothBtn.style.background = '#f59e0b';
         bothBtn.disabled = (rCount >= 2 && bCount >= 2);
       }
-    }
-
-    function triggerConfetti() {
-      const canvas = document.getElementById('confetti-canvas');
-      const ctx = canvas.getContext('2d');
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-
-      const particles = [];
-      const colors = ['#ef4444', '#3b82f6', '#f59e0b', '#10b981', '#ec4899'];
-
-      for (let i = 0; i < 90; i++) {
-        particles.push({
-          x: canvas.width / 2,
-          y: canvas.height / 2,
-          vx: (Math.random() - 0.5) * 14,
-          vy: (Math.random() - 0.7) * 14,
-          size: Math.random() * 9 + 4,
-          color: colors[Math.floor(Math.random() * colors.length)],
-          rotation: Math.random() * 360,
-          rSpeed: (Math.random() - 0.5) * 10
-        });
-      }
-
-      let frame = 0;
-      function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach((p) => {
-          p.x += p.vx;
-          p.y += p.vy;
-          p.vy += 0.2;
-          p.rotation += p.rSpeed;
-
-          ctx.save();
-          ctx.translate(p.x, p.y);
-          ctx.rotate((p.rotation * Math.PI) / 180);
-          ctx.fillStyle = p.color;
-          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
-          ctx.restore();
-        });
-
-        frame++;
-        if (frame < 120) {
-          requestAnimationFrame(animate);
-        } else {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
-      }
-      animate();
     }
 
     window.addEventListener('DOMContentLoaded', () => {
