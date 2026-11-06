@@ -1,23 +1,725 @@
-【ラケット】
-くまで
-ゴルフ
-雪平鍋
-おたま
-光る刀
-ラケット
-じょうろ
-伸びる刀
-スリッパ
-水ひしゃく
-野球バット
-ステンレス鍋
-スポンジバット
-不思議な音がなる筒
-【ボール】
-卓球ボール（橙）
-卓球ボール（白）
-スーパーボール
-サッカーボール
-ホワイトボール
-バスケットボール
-バスケットボール
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ルーレット</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --text-main: #f8fafc;
+      --racket-color: #ef4444;
+      --ball-color: #3b82f6;
+      --accent-yellow: #f59e0b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    .split-container {
+      display: flex;
+      flex: 1;
+      width: 100vw;
+      position: relative;
+      transition: opacity 0.5s ease;
+    }
+
+    .section {
+      flex: 1;
+      width: 50vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 10px;
+      position: relative;
+    }
+
+    .section-racket {
+      background: radial-gradient(circle at center, rgba(239, 68, 68, 0.08) 0%, transparent 70%);
+      border-right: 2px dashed #334155;
+    }
+
+    .section-ball {
+      background: radial-gradient(circle at center, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+    }
+
+    .section-title {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 25px;
+      padding: 12px 30px;
+      border-radius: 20px;
+      text-align: center;
+      line-height: 1.4;
+      letter-spacing: 1px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+      min-width: 320px;
+    }
+
+    .title-racket {
+      background: var(--racket-color);
+      color: white;
+    }
+
+    .title-ball {
+      background: var(--ball-color);
+      color: white;
+    }
+
+    .res-val {
+      color: #ffffff;
+      font-weight: 900;
+    }
+
+    .roulette-wrapper {
+      position: relative;
+      width: min(520px, 44vw);
+      height: min(520px, 44vw);
+      margin-bottom: 25px;
+    }
+
+    .pointer {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      border-top: 40px solid var(--accent-yellow);
+      z-index: 5;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+    }
+
+    .roulette-wheel {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      position: relative;
+      overflow: hidden;
+      border: 10px solid #334155;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 0 20px rgba(0,0,0,0.5);
+      transition: transform 4s cubic-bezier(0.15, 0.9, 0.15, 1);
+    }
+
+    .center-cap {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60px;
+      height: 60px;
+      background: #0f172a;
+      border: 5px solid var(--accent-yellow);
+      border-radius: 50%;
+      z-index: 4;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    }
+
+    .wheel-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .slice-text {
+      font-size: 4.2px;
+      font-weight: bold;
+      fill: #ffffff;
+      text-anchor: end;
+      dominant-baseline: middle;
+      filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.8));
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 15px;
+      z-index: 4;
+    }
+
+    .spin-btn {
+      padding: 16px 36px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      color: white;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+      transition: all 0.2s ease;
+      min-width: 220px;
+      text-align: center;
+    }
+
+    .spin-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+    }
+
+    .spin-btn:active:not(:disabled) {
+      transform: translateY(1px);
+    }
+
+    .spin-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      filter: grayscale(0.8);
+    }
+
+    .btn-racket { background: linear-gradient(135deg, #ef4444, #dc2626); }
+    .btn-ball { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+
+    .center-controls {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+    }
+
+    .btn-both {
+      padding: 20px 48px;
+      font-size: 1.5rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
+      border: 5px solid #1e293b;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(245, 158, 11, 0.5);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn-both:hover:not(:disabled) {
+      transform: scale(1.06);
+      box-shadow: 0 12px 35px rgba(245, 158, 11, 0.7);
+    }
+
+    .btn-both:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .final-result-screen {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 23, 42, 0.95);
+      z-index: 200;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 25px;
+    }
+
+    .final-result-screen.active {
+      display: flex;
+    }
+
+    .final-card {
+      padding: 25px 50px;
+      border-radius: 24px;
+      font-size: 2.2rem;
+      font-weight: 900;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      min-width: 360px;
+    }
+
+    .final-racket {
+      background: rgba(239, 68, 68, 0.2);
+      border: 4px solid var(--racket-color);
+      color: #fca5a5;
+    }
+
+    .final-ball {
+      background: rgba(59, 130, 246, 0.2);
+      border: 4px solid var(--ball-color);
+      color: #93c5fd;
+    }
+
+    .btn-table {
+      padding: 18px 42px;
+      font-size: 1.4rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: 4px solid #1e293b;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+      transition: all 0.2s ease;
+      margin-top: 10px;
+    }
+
+    .btn-table:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.6);
+    }
+
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    @media (max-width: 768px) {
+      .split-container {
+        flex-direction: column;
+      }
+      .section {
+        width: 100vw;
+        height: 48vh;
+      }
+      .section-racket {
+        border-right: none;
+        border-bottom: 2px dashed #334155;
+      }
+      .center-controls {
+        bottom: 50%;
+        transform: translate(-50%, 50%);
+      }
+      .roulette-wrapper {
+        width: min(280px, 65vw);
+        height: min(280px, 65vw);
+      }
+      .section-title {
+        font-size: 1.3rem;
+        min-width: 240px;
+        padding: 8px 16px;
+      }
+      .spin-btn {
+        padding: 12px 24px;
+        font-size: 1.1rem;
+        min-width: 180px;
+      }
+      .btn-both {
+        padding: 14px 30px;
+        font-size: 1.2rem;
+      }
+      .final-card {
+        font-size: 1.5rem;
+        min-width: 280px;
+        padding: 18px 30px;
+      }
+      .btn-table {
+        font-size: 1.1rem;
+        padding: 14px 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="split-container" id="split-container">
+    <!-- 左側：ラケット -->
+    <div class="section section-racket">
+      <div class="section-title title-racket" id="title-racket">
+        ラケット<br>結果:
+      </div>
+      <div class="roulette-wrapper">
+        <div class="pointer"></div>
+        <div class="roulette-wheel" id="wheel-racket">
+          <svg class="wheel-svg" viewBox="0 0 100 100" id="svg-racket"></svg>
+          <div class="center-cap"></div>
+        </div>
+      </div>
+      <div class="btn-group">
+        <button class="spin-btn btn-racket" id="btn-spin-racket" onclick="spinSingle('racket')">左を回す</button>
+      </div>
+    </div>
+
+    <!-- 右側：ボール -->
+    <div class="section section-ball">
+      <div class="section-title title-ball" id="title-ball">
+        ボール<br>結果:
+      </div>
+      <div class="roulette-wrapper">
+        <div class="pointer"></div>
+        <div class="roulette-wheel" id="wheel-ball">
+          <svg class="wheel-svg" viewBox="0 0 100 100" id="svg-ball"></svg>
+          <div class="center-cap"></div>
+        </div>
+      </div>
+      <div class="btn-group">
+        <button class="spin-btn btn-ball" id="btn-spin-ball" onclick="spinSingle('ball')">右を回す</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="center-controls" id="center-controls">
+    <button class="btn-both" id="btn-spin-both" onclick="handleCenterBtn()">両方同時に回す！</button>
+  </div>
+
+  <!-- 全画面結果表示画面 -->
+  <div class="final-result-screen" id="final-screen">
+    <div style="font-size: 2rem; font-weight: 900; color: var(--accent-yellow);">🎉 最終決定 🎉</div>
+    <div class="final-card final-racket" id="final-racket-val">ラケット: -</div>
+    <div class="final-card final-ball" id="final-ball-val">ボール: -</div>
+    <button class="btn-table" onclick="goToTable()">卓球台に向かう</button>
+  </div>
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <script>
+    let racketItems = [
+      "くまで", "ゴルフ", "雪平鍋", "おたま", "光る刀", 
+      "ラケット", "じょうろ", "伸びる刀", "スリッパ", 
+      "水ひしゃく", "野球バット", "ステンレス鍋", 
+      "スポンジバット", "不思議な音がなる筒"
+    ];
+
+    let ballItems = [
+      "卓球ボール（橙）", "卓球ボール（白）", "スーパーボール", 
+      "サッカーボール", "ホワイトボール", "バスケットボール", "バスケットボール"
+    ];
+
+    const racketColors = ["#ef4444", "#f87171", "#dc2626", "#b91c1c", "#fca5a5", "#ef4444", "#e11d48"];
+    const ballColors = ["#3b82f6", "#60a5fa", "#2563eb", "#1d4ed8", "#93c5fd", "#3b82f6", "#0284c7"];
+
+    const state = {
+      racket: { rotation: 0, isSpinning: false, count: 0, lastResult: "" },
+      ball: { rotation: 0, isSpinning: false, count: 0, lastResult: "" }
+    };
+
+    // ブラウザの制限をクリアするためのAudioContext初期化（ユーザー操作時にresume）
+    let audioCtx = null;
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playClickSound() {
+      initAudio();
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.04);
+      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.04);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.04);
+    }
+
+    function playFanfareSound() {
+      initAudio();
+      if (!audioCtx) return;
+      const notes = [523.25, 659.25, 783.99, 1046.50];
+      notes.forEach((freq, idx) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        const startTime = audioCtx.currentTime + idx * 0.1;
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, startTime);
+        gain.gain.setValueAtTime(0.2, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.3);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(startTime);
+        osc.stop(startTime + 0.3);
+      });
+    }
+
+    function buildWheel(type, items, colors) {
+      const svg = document.getElementById(`svg-${type}`);
+      const total = items.length;
+      if (total === 0) {
+        svg.innerHTML = '';
+        return;
+      }
+      const sliceAngle = 360 / total;
+
+      svg.innerHTML = '';
+
+      items.forEach((item, index) => {
+        const startAngle = index * sliceAngle - 90;
+        const endAngle = (index + 1) * sliceAngle - 90;
+        const color = colors[index % colors.length];
+
+        const radStart = (Math.PI * startAngle) / 180;
+        const radEnd = (Math.PI * endAngle) / 180;
+
+        const x1 = 50 + 50 * Math.cos(radStart);
+        const y1 = 50 + 50 * Math.sin(radStart);
+        const x2 = 50 + 50 * Math.cos(radEnd);
+        const y2 = 50 + 50 * Math.sin(radEnd);
+        const largeArc = sliceAngle > 180 ? 1 : 0;
+
+        const pathData = `M 50 50 L ${x1} ${y1} A 50 50 0 ${largeArc} 1 ${x2} ${y2} Z`;
+        
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", pathData);
+        path.setAttribute("fill", color);
+        path.setAttribute("stroke", "#1e293b");
+        path.setAttribute("stroke-width", "0.4");
+        svg.appendChild(path);
+
+        const midAngle = startAngle + sliceAngle / 2;
+        const textGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        textGroup.setAttribute("transform", `rotate(${midAngle}, 50, 50)`);
+
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("x", "95");
+        text.setAttribute("y", "50");
+        text.setAttribute("class", "slice-text");
+        text.textContent = item;
+
+        if (item.length > 6) {
+          text.setAttribute("font-size", "3px");
+        }
+
+        textGroup.appendChild(text);
+        svg.appendChild(textGroup);
+      });
+    }
+
+    function spin(type, items) {
+      return new Promise((resolve) => {
+        if (items.length === 0) {
+          resolve("");
+          return;
+        }
+        initAudio();
+        state[type].isSpinning = true;
+        setButtonsDisabledDuringSpin(true);
+
+        const wheel = document.getElementById(`wheel-${type}`);
+        const sliceAngle = 360 / items.length;
+
+        const selectedIndex = Math.floor(Math.random() * items.length);
+        const extraRounds = (5 + Math.floor(Math.random() * 4)) * 360;
+        
+        const targetSectorAngle = 360 - (selectedIndex * sliceAngle + sliceAngle / 2);
+        const currentMod = state[type].rotation % 360;
+        const targetRotation = state[type].rotation + extraRounds + (targetSectorAngle - currentMod + 360) % 360;
+        
+        state[type].rotation = targetRotation;
+        wheel.style.transform = `rotate(${targetRotation}deg)`;
+
+        const soundInterval = setInterval(() => {
+          if (state[type].isSpinning) {
+            playClickSound();
+          }
+        }, 150);
+
+        setTimeout(() => {
+          clearInterval(soundInterval);
+          state[type].isSpinning = false;
+          state[type].count += 1;
+          state[type].lastResult = items[selectedIndex];
+          
+          const titleElem = document.getElementById(`title-${type}`);
+          const labelName = type === 'racket' ? 'ラケット' : 'ボール';
+          titleElem.innerHTML = `${labelName}<br>結果: <span class="res-val">${items[selectedIndex]}</span>`;
+
+          updateButtons();
+          playFanfareSound();
+          triggerConfetti();
+          resolve(items[selectedIndex]);
+        }, 4000);
+      });
+    }
+
+    async function spinSingle(type) {
+      const items = type === 'racket' ? racketItems : ballItems;
+      await spin(type, items);
+    }
+
+    async function handleCenterBtn() {
+      const rCount = state.racket.count;
+      const bCount = state.ball.count;
+
+      if (rCount >= 1 && bCount >= 1) {
+        document.getElementById('split-container').style.display = 'none';
+        document.getElementById('center-controls').style.display = 'none';
+        
+        document.getElementById('final-racket-val').textContent = `ラケット: ${state.racket.lastResult}`;
+        document.getElementById('final-ball-val').textContent = `ボール: ${state.ball.lastResult}`;
+        
+        document.getElementById('final-screen').classList.add('active');
+        playFanfareSound();
+        triggerConfetti();
+      } else {
+        await Promise.all([
+          spin('racket', racketItems),
+          spin('ball', ballItems)
+        ]);
+      }
+    }
+
+    function goToTable() {
+      if (state.racket.lastResult) {
+        const idx = racketItems.indexOf(state.racket.lastResult);
+        if (idx !== -1) racketItems.splice(idx, 1);
+      }
+      if (state.ball.lastResult) {
+        const idx = ballItems.indexOf(state.ball.lastResult);
+        if (idx !== -1) ballItems.splice(idx, 1);
+      }
+
+      buildWheel('racket', racketItems, racketColors);
+      buildWheel('ball', ballItems, ballColors);
+
+      state.racket.count = 0;
+      state.ball.count = 0;
+      state.racket.lastResult = "";
+      state.ball.lastResult = "";
+
+      document.getElementById('title-racket').innerHTML = "ラケット<br>結果:";
+      document.getElementById('title-ball').innerHTML = "ボール<br>結果:";
+
+      document.getElementById('wheel-racket').style.transform = "rotate(0deg)";
+      document.getElementById('wheel-ball').style.transform = "rotate(0deg)";
+      state.racket.rotation = 0;
+      state.ball.rotation = 0;
+
+      document.getElementById('final-screen').classList.remove('active');
+      document.getElementById('split-container').style.display = 'flex';
+      document.getElementById('center-controls').style.display = 'block';
+
+      updateButtons();
+    }
+
+    function setButtonsDisabledDuringSpin(disabled) {
+      document.getElementById('btn-spin-racket').disabled = disabled;
+      document.getElementById('btn-spin-ball').disabled = disabled;
+      document.getElementById('btn-spin-both').disabled = disabled;
+    }
+
+    function updateButtons() {
+      const racketBtn = document.getElementById('btn-spin-racket');
+      const ballBtn = document.getElementById('btn-spin-ball');
+      const bothBtn = document.getElementById('btn-spin-both');
+
+      const rCount = state.racket.count;
+      const bCount = state.ball.count;
+
+      if (rCount === 0) {
+        racketBtn.textContent = '左を回す';
+        racketBtn.disabled = false;
+      } else if (rCount === 1) {
+        racketBtn.textContent = 'ラスト１回まわす';
+        racketBtn.disabled = false;
+      } else {
+        if (bCount < 2) {
+          racketBtn.textContent = '右を回してね';
+        } else {
+          racketBtn.textContent = '終了';
+        }
+        racketBtn.disabled = true;
+      }
+
+      if (bCount === 0) {
+        ballBtn.textContent = '右を回す';
+        ballBtn.disabled = false;
+      } else if (bCount === 1) {
+        ballBtn.textContent = 'ラスト１回まわす';
+        ballBtn.disabled = false;
+      } else {
+        if (rCount < 2) {
+          ballBtn.textContent = '左を回してね';
+        } else {
+          ballBtn.textContent = '終了';
+        }
+        ballBtn.disabled = true;
+      }
+
+      if (rCount >= 1 && bCount >= 1) {
+        bothBtn.textContent = '決定';
+        bothBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+        bothBtn.disabled = false;
+      } else {
+        bothBtn.textContent = '両方同時に回す！';
+        bothBtn.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+        bothBtn.disabled = (rCount >= 2 && bCount >= 2);
+      }
+    }
+
+    function triggerConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const colors = ['#ef4444', '#3b82f6', '#f59e0b', '#10b981', '#ec4899'];
+
+      for (let i = 0; i < 90; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 14,
+          vy: (Math.random() - 0.7) * 14,
+          size: Math.random() * 9 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          rSpeed: (Math.random() - 0.5) * 10
+        });
+      }
+
+      let frame = 0;
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach((p) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.2;
+          p.rotation += p.rSpeed;
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          ctx.restore();
+        });
+
+        frame++;
+        if (frame < 120) {
+          requestAnimationFrame(animate);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+      animate();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      buildWheel('racket', racketItems, racketColors);
+      buildWheel('ball', ballItems, ballColors);
+      updateButtons();
+    });
+  </script>
+</body>
+</html>
