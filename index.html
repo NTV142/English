@@ -28,6 +28,7 @@
       display: flex;
       flex-direction: column;
       overflow-x: hidden;
+      user-select: none;
     }
 
     .split-container {
@@ -405,7 +406,35 @@
       ball: { rotation: 0, isSpinning: false, count: 0, lastResult: "" }
     };
 
-    // ブラウザの制限をクリアするためのAudioContext初期化（ユーザー操作時にresume）
+    // ダブルタップで全画面切り替え
+    let lastTapTime = 0;
+    document.addEventListener('touchend', (e) => {
+      const currentTime = new Date().getTime();
+      const tapLength = currentTime - lastTapTime;
+      if (tapLength < 300 && tapLength > 0) {
+        toggleFullScreen();
+        e.preventDefault();
+      }
+      lastTapTime = currentTime;
+    });
+
+    // PCでのダブルクリック用（必要に応じて）
+    document.addEventListener('dblclick', () => {
+      toggleFullScreen();
+    });
+
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          console.log(`全画面化エラー: ${err.message}`);
+        });
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
     let audioCtx = null;
     function initAudio() {
       if (!audioCtx) {
